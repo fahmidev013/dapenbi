@@ -1,7 +1,15 @@
 package test.fahmi.dapenbi.controller;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.validation.Valid;
 
@@ -17,13 +25,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import net.andreinc.mockneat.MockNeat;
 import test.fahmi.dapenbi.model.User;
 import test.fahmi.dapenbi.repository.UserRepository;
 
 @RestController
 @RequestMapping("/user")
 public class DapenbiApiController {
+	private Timer timer = new Timer();
 	
 	@Autowired 
 	UserRepository userRepository;
@@ -32,6 +41,55 @@ public class DapenbiApiController {
 	 public List<User> getAll(){ 
 		 return userRepository.findAll();
 	  }
+	 
+	 @GetMapping("/coba") 
+	 public void gen(){ 
+		 MockNeat m = MockNeat.threadLocal();
+		 final Path path = Paths.get("./test.csv");
+		 ArrayList<String> st = new ArrayList<String>();	 
+		 timer.schedule( new TimerTask() {
+		     public void run() {
+		    	 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
+		         .param("id", m.longSeq().start(10).increment(10))
+		         .param("first", m.names().first())
+		         .param("last", m.names().last())
+		         .param("email", m.emails().domain("company.com"))
+		         .param("salary", m.ints().range(1000, 5000))
+		         .list(1)
+		         .consume(list -> {
+		        	 System.out.println(list);
+		        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
+		             catch (IOException e) { e.printStackTrace(); }
+		         });
+		     }
+		  }, 0, 5*1000);
+	
+	  }
+	 
+	 @GetMapping("/coba1") 
+	 public void stop(){ 
+		 timer.cancel(); 
+	  }
+	 
+	 
+	 private void writeCsv() {
+		 MockNeat m = MockNeat.threadLocal();
+		 final Path path = Paths.get("./test.csv");
+
+		 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
+		                 .param("id", m.longSeq().start(10).increment(10))
+		                 .param("first", m.names().first())
+		                 .param("last", m.names().last())
+		                 .param("email", m.emails().domain("company.com"))
+		                 .param("salary", m.ints().range(1000, 5000))
+		                 .list(15)
+		                 .consume(list -> {
+		                     try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
+		                     catch (IOException e) { e.printStackTrace(); }
+		                 });
+		 
+	 }
+	 
 	  
 	  
 	  @PostMapping("/") 

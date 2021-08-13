@@ -5,14 +5,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import test.fahmi.dapenbi.model.User;
+
 @Controller
 public class DapenbiWebController {
 	
-	@GetMapping("/test")
-	public String index(@RequestParam(name = "name", required = false, defaultValue = "World") String name,
-			Model model) {
-		model.addAttribute("name", name);
-		return "index";
+//	@GetMapping("/test")
+//	public String index(@RequestParam(name = "name", required = false, defaultValue = "World") String name,
+//			Model model) {
+//		model.addAttribute("name", name);
+//		return "index";
+//	}
+	
+	@GetMapping("/generate")
+	public String showRegistrationForm(Model model) {
+	    model.addAttribute("user", new User());
+	     
+	    return "index";
 	}
 
 }
