@@ -77,7 +77,7 @@ public class DapenbiWebController {
 		            HttpMethod.GET, null, new ParameterizedTypeReference<List<User>>() {
 		            });
 		List<User> listOfUser = responseEntity.getBody();
-		DapenbiApplication.log.warn(listOfUser.toString());
+		DapenbiApplication.log.warning(listOfUser.toString());
 		model.addAttribute("users", listOfUser);
 		model.addAttribute("stop", true);
 	    model.addAttribute("isNotFirst", false);

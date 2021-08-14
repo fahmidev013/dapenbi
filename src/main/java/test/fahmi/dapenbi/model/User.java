@@ -25,6 +25,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"}, allowGetters = true)
 
 public class User implements Serializable{
+	
+	static public int data_received = 0;
+	static public int data_successful = 0;
+	static public int data_failed = 0;
+	
+public User(User s) {
+		
+		name 	= s.name;
+		nip 		= s.nip;
+		dob= s.dob;
+		address 			= s.address;
+		phone 	= s.phone;
+	}
+	
 
 @Id
 @GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
@@ -141,5 +155,16 @@ this.createdAt = createdAt;
 public void setUpdatedAt(Date updatedAt) {
 this.updatedAt = updatedAt;
 }
+
+
+public boolean recordNotComplete() {
+	if (name.equals("") || nip.equals("") || 	dob.equals("")	) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 }
 
