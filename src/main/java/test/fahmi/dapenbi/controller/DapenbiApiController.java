@@ -44,46 +44,6 @@ public class DapenbiApiController {
 	 public List<User> getAll(){ 
 		 return userRepository.findAll();
 	  }
-	 
-//	 @GetMapping("/mulai")
-//	 public String mulai(Model model) {
-//		 Calendar cal = Calendar.getInstance();  
-//		 cal.setTime(new Date());              
-//		 cal.add(Calendar.SECOND, 30);      
-//		    
-//		 MockNeat m = MockNeat.threadLocal();
-//		 final Path path = Paths.get("./dataRandom.csv");
-//		 List<String> users = new ArrayList<String>();	 
-//		 timer.schedule( new TimerTask() {
-//		     public void run() {
-//		    	 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
-//		         .param("id", m.longSeq().start(10).increment(10))
-//		         .param("first", m.names().first())
-//		         .param("last", m.names().last())
-//		         .param("email", m.emails().domain("company.com"))
-//		         .param("salary", m.ints().range(1000, 5000))
-//		         .list(1)
-//		         .consume(list -> {
-//		        	 users.addAll(list);
-//		        	 System.out.println(list);
-//		        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
-//		             catch (IOException e) { e.printStackTrace(); }
-//		         });
-//		     }
-//		  }, cal.getTime(), 5*1000);
-//		 model.addAttribute("waktu", cal.getTime());
-//		 model.addAttribute("users", users);
-//		 return "index";
-//	 }
-//	 
-//	 
-//	 @GetMapping("/berhenti") 
-//	 public String stop(){ 
-//		 timer.cancel();
-//		 return "Proses sudah Berhenti";
-//	  }
-	 
-	 
 	  
 	  
 	  @PostMapping("/") 
@@ -106,7 +66,7 @@ public class DapenbiApiController {
 	  }
 	  
 	  @DeleteMapping("/{id}") 
-	  public String deleteBuku(@PathVariable (value="id") Long id){ 
+	  public String deleteUser(@PathVariable (value="id") Long id){ 
 	  User user = userRepository.findById(id).get(); String result = "";
 	  if(user == null) { 
 		  result = "id "+id+" tidak ditemukan"; return result; 
@@ -116,14 +76,14 @@ public class DapenbiApiController {
 	  }
 	  
 	  @GetMapping("/{id}") 
-	  public ResponseEntity<User> getBukuById(@PathVariable(value="id") Long id){ 
+	  public ResponseEntity<User> getUserById(@PathVariable(value="id") Long id){ 
 		  User user = userRepository.findById(id).get(); 
 		  if(user == null) return ResponseEntity.notFound().build(); 
 		  return ResponseEntity.ok().body(user); 
 	}
 	  
 	  @GetMapping("/sortuser") 
-	  public List<User> sortbuku(@RequestParam(value="title")String name){ 
+	  public List<User> sortuser(@RequestParam(value="title")String name){ 
 	return userRepository.findByName(name); 
 	}
 	  
