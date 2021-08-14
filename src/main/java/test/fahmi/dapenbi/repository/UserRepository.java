@@ -9,6 +9,6 @@ import test.fahmi.dapenbi.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-	List<User> findByIdNumber (int IdNumber);
+	List<User> findByIdNumber (String IdNumber);
 	List<User> findByName(String name);
 }

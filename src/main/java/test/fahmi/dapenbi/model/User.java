@@ -19,11 +19,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
 @Entity
 @Table(name = "user")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"}, allowGetters = true)
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@ToString
 public class User implements Serializable{
 
 @Id
@@ -46,10 +54,10 @@ private String gender;
 private String address;
 
 @NotBlank
-private int idNumber;
+private String idNumber;
 
 @NotBlank
-private int phone;
+private String phone;
 
 
 @Column(nullable = false, updatable = false)
@@ -61,50 +69,58 @@ private Date createdAt;
 @Temporal(TemporalType.TIMESTAMP)
 @LastModifiedDate
 private Date updatedAt;
+public User() {}
+public User(String nip, String name, String dob, String gender, String address, String id_number, String phone) {
+	this.nip = nip;
+	this.name = name;
+	this.dob = dob;
+	this.gender = gender;
+	this.address = address;
+	this.idNumber = id_number;
+	this.phone = phone;
+}
 
 public Long getId() {
-return id;
+return this.id;
 }
 
 public String getNip() {
-return nip;
+return this.nip;
 }
 
 public String getName() {
-return name;
+return this.name;
 }
 
 public String getDob() {
-return dob;
+return this.dob;
 }
 
 public String getGender() {
-return gender;
+return this.gender;
 }
 
 public String getAddress() {
-return address;
+return this.address;
 }
 
-public int getIdNumber() {
-return idNumber;
+public String getIdNumber() {
+return this.idNumber;
 }
 
-public int getPhone() {
-return phone;
+public String getPhone() {
+return this.phone;
 }
 
 public Date getCreatedAt() {
-return createdAt;
+return this.createdAt;
 }
 
 public Date getUpdatedAt() {
-return updatedAt;
+return this.updatedAt;
 }
 
-public void setId(Long id) {
-this.id = id;
-}
+
 
 public void setNip(String nip) {
 this.nip = nip;
@@ -126,11 +142,11 @@ public void setAddress(String address) {
 this.address = address;
 }
 
-public void setIdNumber(int idNumber) {
+public void setIdNumber(String idNumber) {
 this.idNumber = idNumber;
 }
 
-public void setPhone(int phone) {
+public void setPhone(String phone) {
 this.phone = phone;
 }
 

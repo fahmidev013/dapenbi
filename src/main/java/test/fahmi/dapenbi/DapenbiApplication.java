@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.client.RestTemplate;
 
-import test.fahmi.dapenbi.model.Quote;
 
 @SpringBootApplication
 @EnableJpaAuditing

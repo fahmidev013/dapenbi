@@ -88,7 +88,7 @@ public class DapenbiApiController {
 	}
 	  
 	  @GetMapping("/sortktp/{idNumber}") 
-	  public List<User> sortstatus(@PathVariable(value="idNumber") int idNumber){
+	  public List<User> sortstatus(@PathVariable(value="idNumber") String idNumber){
 	  return userRepository.findByIdNumber(idNumber); 
 	  }
 	 

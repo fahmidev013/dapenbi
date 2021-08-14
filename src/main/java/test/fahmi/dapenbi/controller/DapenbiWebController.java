@@ -31,13 +31,14 @@ import org.springframework.web.client.RestTemplate;
 
 import net.andreinc.mockneat.MockNeat;
 import test.fahmi.dapenbi.DapenbiApplication;
-import test.fahmi.dapenbi.model.Quote;
+
 import test.fahmi.dapenbi.model.User;
+import test.fahmi.dapenbi.utils.BatchConfiguration;
 
 @Controller
 public class DapenbiWebController {
 	private Timer timer = null;
-
+	private Thread t2 = null;
 	 @Autowired
 	   RestTemplate restTemplate;
 	
@@ -48,25 +49,14 @@ public class DapenbiWebController {
 //		model.addAttribute("name", name);
 //		return "index";
 //	}
+
+		@PostMapping("/cobalagi")
+		public String coba(Model model) {
+			BatchConfiguration b = new BatchConfiguration();
+			return "index";
+		}
 	
 	
-	
-	
-	
-	
-//	@Bean
-//	public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
-//		return args -> {
-//			User user = restTemplate.getForObject(
-//					"https://127.0.0.1:8080/user/", User.class);
-////			ResponseEntity<User[]> response =
-////					  restTemplate.getForEntity(
-////					  "http://localhost:8080/user/",
-////					  User[].class);
-////					User[] user = response.getBody();		
-//			DapenbiApplication.log.warn(user.toString());
-//		};
-//	}
 	
 	@GetMapping("/")
 	public String index(Model model) {
@@ -87,43 +77,51 @@ public class DapenbiWebController {
 
 	
 	
-	@GetMapping("/generate")
-	public String showRegistrationForm(Model model) {
-	    model.addAttribute("waktu", new Date());
-	     
-	    return "index";
-	}
+	
 	
 	@PostMapping("/mulai")
 	 public String mulai(Model model) {
-		 timer = new Timer();
+		timer = new Timer();
 		 Calendar cal = Calendar.getInstance(); // creates calendar
 		 cal.setTime(new Date());               // sets calendar time/date
 		 cal.add(Calendar.SECOND, 5);      // adds one hour
-		    
-		 MockNeat m = MockNeat.threadLocal();
-		 final Path path = Paths.get("./dataRandom.csv");
 		 List<String> users = new ArrayList<String>();	 
-		 timer.schedule( new TimerTask() {
-		     public void run() {
-		    	 m.fmt("#{id},#{nip},#{name},#{dob},#{gender},#{address},#{idNumber},#{phone}")
-		         .param("id", m.regex("\\d{4}"))
-		         .param("nip", m.regex("\\d{4}"))
-		         .param("name", m.names().full(90))
-		         .param("dob", m.localDates())
-		         .param("gender", m.genders().letter())
-		         .param("address", m.addresses())
-		         .param("idNumber", m.regex("\\d{16}"))
-		         .param("phone", m.regex("081[7-9]{1}-\\d{4}-\\d{4}"))
-		         .list(1)
-		         .consume(list -> {
-		        	 users.addAll(list);
-		        	 System.out.println(list);
-		        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
-		             catch (IOException e) { e.printStackTrace(); }
-		         });
-		     }
-		  }, cal.getTime(), 10*1000);
+		
+		t2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MockNeat m = MockNeat.threadLocal();
+				 final Path path = Paths.get("./dataRandom.csv");
+				 
+				 timer.schedule( new TimerTask() {
+				     public void run() {
+				    	 m.fmt("#{nip},#{name},#{dob},#{gender},#{address},#{idNumber},#{phone}")
+				         .param("nip", m.regex("\\d{4}"))
+				         .param("name", m.names().full(90))
+				         .param("dob", m.localDates())
+				         .param("gender", m.genders().letter())
+				         .param("address", m.addresses())
+				         .param("idNumber", m.regex("\\d{16}"))
+				         .param("phone", m.regex("081[7-9]{1}-\\d{4}-\\d{4}"))
+				         .list(25)
+				         .consume(list -> {
+				        	 users.addAll(list);
+				        	 System.out.println(list);
+				        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
+				             catch (IOException e) { e.printStackTrace(); }
+				         });
+				     }
+				  }, cal.getTime(), 10*1000);
+				
+			}});
+		try {
+			t2.start();
+			t2.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 		    
 		 model.addAttribute("waktu", "Cronjob dimulai 3 menit dari waktu sekarang: "+ cal.getTime());
 		 model.addAttribute("users", users);
 		 model.addAttribute("start", true);
@@ -136,6 +134,7 @@ public class DapenbiWebController {
 	 @PostMapping("/berhenti") 
 	 public String stop(Model model){ 
 		 if(timer != null) timer.cancel();
+		 if (t2 != null)t2.interrupt();
 		 model.addAttribute("waktu", "Cronjob telah berhenti");
 		 model.addAttribute("start", false);
 		 model.addAttribute("stop", true);
