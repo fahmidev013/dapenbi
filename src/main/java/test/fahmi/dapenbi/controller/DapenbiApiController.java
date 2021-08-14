@@ -6,6 +6,8 @@ import java.nio.file.StandardOpenOption;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
@@ -15,6 +17,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,53 +45,44 @@ public class DapenbiApiController {
 		 return userRepository.findAll();
 	  }
 	 
-	 @GetMapping("/coba") 
-	 public void gen(){ 
-		 MockNeat m = MockNeat.threadLocal();
-		 final Path path = Paths.get("./test.csv");
-		 ArrayList<String> st = new ArrayList<String>();	 
-		 timer.schedule( new TimerTask() {
-		     public void run() {
-		    	 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
-		         .param("id", m.longSeq().start(10).increment(10))
-		         .param("first", m.names().first())
-		         .param("last", m.names().last())
-		         .param("email", m.emails().domain("company.com"))
-		         .param("salary", m.ints().range(1000, 5000))
-		         .list(1)
-		         .consume(list -> {
-		        	 System.out.println(list);
-		        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
-		             catch (IOException e) { e.printStackTrace(); }
-		         });
-		     }
-		  }, 0, 5*1000);
-	
-	  }
+//	 @GetMapping("/mulai")
+//	 public String mulai(Model model) {
+//		 Calendar cal = Calendar.getInstance();  
+//		 cal.setTime(new Date());              
+//		 cal.add(Calendar.SECOND, 30);      
+//		    
+//		 MockNeat m = MockNeat.threadLocal();
+//		 final Path path = Paths.get("./dataRandom.csv");
+//		 List<String> users = new ArrayList<String>();	 
+//		 timer.schedule( new TimerTask() {
+//		     public void run() {
+//		    	 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
+//		         .param("id", m.longSeq().start(10).increment(10))
+//		         .param("first", m.names().first())
+//		         .param("last", m.names().last())
+//		         .param("email", m.emails().domain("company.com"))
+//		         .param("salary", m.ints().range(1000, 5000))
+//		         .list(1)
+//		         .consume(list -> {
+//		        	 users.addAll(list);
+//		        	 System.out.println(list);
+//		        	 try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
+//		             catch (IOException e) { e.printStackTrace(); }
+//		         });
+//		     }
+//		  }, cal.getTime(), 5*1000);
+//		 model.addAttribute("waktu", cal.getTime());
+//		 model.addAttribute("users", users);
+//		 return "index";
+//	 }
+//	 
+//	 
+//	 @GetMapping("/berhenti") 
+//	 public String stop(){ 
+//		 timer.cancel();
+//		 return "Proses sudah Berhenti";
+//	  }
 	 
-	 @GetMapping("/coba1") 
-	 public void stop(){ 
-		 timer.cancel(); 
-	  }
-	 
-	 
-	 private void writeCsv() {
-		 MockNeat m = MockNeat.threadLocal();
-		 final Path path = Paths.get("./test.csv");
-
-		 m.fmt("#{id},#{first},#{last},#{email},#{salary},#{creditCardNum}")
-		                 .param("id", m.longSeq().start(10).increment(10))
-		                 .param("first", m.names().first())
-		                 .param("last", m.names().last())
-		                 .param("email", m.emails().domain("company.com"))
-		                 .param("salary", m.ints().range(1000, 5000))
-		                 .list(15)
-		                 .consume(list -> {
-		                     try { Files.write(path, list, StandardOpenOption.CREATE, StandardOpenOption.WRITE); }
-		                     catch (IOException e) { e.printStackTrace(); }
-		                 });
-		 
-	 }
 	 
 	  
 	  
